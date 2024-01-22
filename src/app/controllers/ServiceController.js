@@ -42,10 +42,10 @@ class ServiceController {
     async find(req, res, next) {
         const limit = req.query.limit;
         const skip = req.query.skip;
-        const search = req?.query?.search;
+        const search = req.query.search;
 
-        const name = Number(req?.query?.sortName);
-        const createDate = Number(req?.query?.sortCreateDate);
+        const name = Number(req.query.sortName);
+        const createDate = Number(req.query.sortCreateDate);
 
         let sort = {};
         if (name === 1 || name === -1) {
@@ -60,7 +60,7 @@ class ServiceController {
                     { name: { $regex: new RegExp(search, "i") } },
                     {
                         title: {
-                            $regex: new RegExp(search?.replace(/ /g, "-"), "i"),
+                            $regex: new RegExp(search.replace(/ /g, "-"), "i"),
                         },
                     },
                 ],
@@ -74,7 +74,7 @@ class ServiceController {
                     { name: { $regex: new RegExp(search, "i") } },
                     {
                         title: {
-                            $regex: new RegExp(search?.replace(/ /g, "-"), "i"),
+                            $regex: new RegExp(search.replace(/ /g, "-"), "i"),
                         },
                     },
                 ],
@@ -181,7 +181,7 @@ class ServiceController {
                     { name: { $regex: new RegExp(search, "i") } },
                     {
                         title: {
-                            $regex: new RegExp(search?.replace(/ /g, "-"), "i"),
+                            $regex: new RegExp(search.replace(/ /g, "-"), "i"),
                         },
                     },
                 ],

@@ -182,7 +182,7 @@ class UserController {
 
     // [POST] /api/v1/user/refresh
     async requestRefreshToken(req, res, next) {
-        const refreshToken = req.cookies?.refreshToken;
+        const refreshToken = req.cookies.refreshToken;
 
         if (!refreshToken) {
             return res.status(401).json("You're not authenticated");
@@ -214,7 +214,7 @@ class UserController {
     // [POST] /api/v1/user/logout
     async logout(req, res, next) {
         try {
-            const refreshToken = req.cookies?.refreshToken;
+            const refreshToken = req.cookies.refreshToken;
 
             if (!refreshToken) {
                 return res.status(401).json("You're not authenticated");
@@ -289,11 +289,11 @@ class UserController {
     async find(req, res, next) {
         const limit = req.query.limit;
         const skip = req.query.skip;
-        const search = req?.query?.search;
+        const search = req.query.search;
 
-        const name = Number(req?.query?.sortName);
-        const createDate = Number(req?.query?.sortCreateDate);
-        const updateDate = Number(req?.query?.sortContentLastUpdate);
+        const name = Number(req.query.sortName);
+        const createDate = Number(req.query.sortCreateDate);
+        const updateDate = Number(req.query.sortContentLastUpdate);
 
         let sort = {};
         if (name === 1 || name === -1) {
@@ -310,7 +310,7 @@ class UserController {
                     { name: { $regex: new RegExp(search, "i") } },
                     {
                         title: {
-                            $regex: new RegExp(search?.replace(/ /g, "-"), "i"),
+                            $regex: new RegExp(search.replace(/ /g, "-"), "i"),
                         },
                     },
                 ],
@@ -325,7 +325,7 @@ class UserController {
                     { name: { $regex: new RegExp(search, "i") } },
                     {
                         title: {
-                            $regex: new RegExp(search?.replace(/ /g, "-"), "i"),
+                            $regex: new RegExp(search.replace(/ /g, "-"), "i"),
                         },
                     },
                 ],
