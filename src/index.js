@@ -12,7 +12,7 @@ const db = require("./config/db");
 db.connect();
 
 const corsOptions = {
-    origin: "*",
+    origin: "http://52.90.51.148:3000",
     credentials: true, //access-control-allow-credentials:true
     optionSuccessStatus: 200,
 };
