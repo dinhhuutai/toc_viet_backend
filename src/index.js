@@ -12,7 +12,7 @@ const db = require("./config/db");
 db.connect();
 
 const corsOptions = {
-    origin: "http://52.90.51.148:3000",
+    origin: "http://tocvietxuanloc.com",
     credentials: true, //access-control-allow-credentials:true
     optionSuccessStatus: 200,
 };
