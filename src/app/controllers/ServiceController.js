@@ -299,6 +299,116 @@ class ServiceController {
                 .json({ success: false, message: "Internal server error" });
         }
     }
+
+    // [GET] /api/v1/service/getAdminComment?limit=&skip=
+    async getAdminComment(req, res, next) {
+        const limit = req.query.limit;
+        const skip = req.query.skip;
+
+        try {
+            const services = await Service.find()
+                .sort({ createDate: -1 })
+                .limit(limit)
+                .skip(skip);
+
+            const totalService = await Service.find().count();
+
+            return res.status(200).json({
+                success: true,
+                services,
+                totalService,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    // [PUT] /api/v1/service/updateComment/:idService/:idComment
+    async updateComment(req, res, next) {
+        try {
+            const service = await Service.findById(
+                req.params.idService
+            );
+
+            const commentToUpdate = service.comment.find(
+                (comment) => comment._id.toString() === req.params.idComment
+            );
+
+            commentToUpdate.feedback = req.body.feedback;
+            service.updateDate = new Date();
+
+            const updatedService = await service.save();
+
+            return res.status(200).json({
+                success: true,
+                updatedService,
+                feedback: commentToUpdate.feedback,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    // [POST] /api/v1/service/findCommentByNotFeedback/:id?limit=
+    async findCommentByNotFeedback(req, res, next) {
+        try {
+            const id = req.params.id;
+            const limit = req.query.limit;
+
+            const service = await Service.findById(id);
+
+            const commentTemp = service.comment.filter((com) => {
+                if (com.feedback === "" || !com.feedback) {
+                    return com;
+                }
+            });
+
+            // Giới hạn mảng comment chỉ lấy 10 phần tử
+            const comment = commentTemp.slice(limit * 10, (limit + 1) * 10);
+
+            const commentLength = commentTemp.length;
+
+            return res.status(200).json({
+                success: true,
+                comment,
+                commentLength,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    // [POST] /api/v1/service/deleteComment/:idService/:idComment
+    async deleteComment(req, res, next) {
+        try {
+            const result = await Service.findByIdAndUpdate(
+                req.params.idService,
+                {
+                    $pull: {
+                        comment: { _id: req.params.idComment },
+                    },
+                }
+            );
+
+            return res.status(200).json({
+                success: true,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
 }
 
 module.exports = new ServiceController();

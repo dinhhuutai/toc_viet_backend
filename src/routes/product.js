@@ -13,5 +13,10 @@ router.get("/getAll", productController.getAll);
 router.post("/createComment/:id", productController.createComment);
 router.post("/findComment/:id", productController.findComment);
 
+router.get("/getAdminComment", productController.getAdminComment);
+router.put("/updateComment/:idProduct/:idComment", productController.updateComment);
+router.post("/findCommentByNotFeedback/:id", productController.findCommentByNotFeedback);
+router.post("/deleteComment/:idProduct/:idComment", productController.deleteComment);
+
 
 module.exports = router;

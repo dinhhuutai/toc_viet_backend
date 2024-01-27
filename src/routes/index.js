@@ -8,6 +8,9 @@ const userRouter = require('./user');
 const productRouter = require('./product');
 const categoryRouter = require('./category');
 
+const noticeRouter = require('./notice');
+const orderRouter = require('./order');
+
 
 function routes(app) {
 
@@ -21,6 +24,9 @@ function routes(app) {
     
     app.use("/api/v1/cloudinary", cloudRouter);
     app.use("/api/v1/user", userRouter);
+
+    app.use("/api/v1/notice", noticeRouter);
+    app.use("/api/v1/order", orderRouter);
 
 }
 

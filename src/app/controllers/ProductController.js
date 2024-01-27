@@ -247,6 +247,116 @@ class ProductController {
         }
     }
 
+    // [GET] /api/v1/product/getAdminComment?limit=&skip=
+    async getAdminComment(req, res, next) {
+        const limit = req.query.limit;
+        const skip = req.query.skip;
+
+        try {
+            const products = await Product.find()
+                .sort({ createDate: -1 })
+                .limit(limit)
+                .skip(skip);
+
+            const totalProduct = await Product.find().count();
+
+            return res.status(200).json({
+                success: true,
+                products,
+                totalProduct,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    // [PUT] /api/v1/product/updateComment/:idProduct/:idComment
+    async updateComment(req, res, next) {
+        try {
+            const product = await Product.findById(
+                req.params.idProduct
+            );
+
+            const commentToUpdate = product.comment.find(
+                (comment) => comment._id.toString() === req.params.idComment
+            );
+
+            commentToUpdate.feedback = req.body.feedback;
+            product.updateDate = new Date();
+
+            const updatedProduct = await product.save();
+
+            return res.status(200).json({
+                success: true,
+                updatedProduct,
+                feedback: commentToUpdate.feedback,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    // [POST] /api/v1/product/findCommentByNotFeedback/:id?limit=
+    async findCommentByNotFeedback(req, res, next) {
+        try {
+            const id = req.params.id;
+            const limit = req.query.limit;
+
+            const product = await Product.findById(id);
+
+            const commentTemp = product.comment.filter((com) => {
+                if (com.feedback === "" || !com.feedback) {
+                    return com;
+                }
+            });
+
+            // Giới hạn mảng comment chỉ lấy 10 phần tử
+            const comment = commentTemp.slice(limit * 10, (limit + 1) * 10);
+
+            const commentLength = commentTemp.length;
+
+            return res.status(200).json({
+                success: true,
+                comment,
+                commentLength,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    // [POST] /api/v1/product/deleteComment/:idProduct/:idComment
+    async deleteComment(req, res, next) {
+        try {
+            const result = await Product.findByIdAndUpdate(
+                req.params.idProduct,
+                {
+                    $pull: {
+                        comment: { _id: req.params.idComment },
+                    },
+                }
+            );
+
+            return res.status(200).json({
+                success: true,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
 }
 
 module.exports = new ProductController();

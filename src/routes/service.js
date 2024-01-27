@@ -16,6 +16,11 @@ router.post("/find", verifyToken, serviceController.find);
 router.post("/createComment/:id", serviceController.createComment);
 router.post("/findComment/:id", serviceController.findComment);
 
+router.get("/getAdminComment", serviceController.getAdminComment);
+router.put("/updateComment/:idService/:idComment", serviceController.updateComment);
+router.post("/findCommentByNotFeedback/:id", serviceController.findCommentByNotFeedback);
+router.post("/deleteComment/:idService/:idComment", serviceController.deleteComment);
+
 
 
 module.exports = router;
