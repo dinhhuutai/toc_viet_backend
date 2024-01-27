@@ -12,7 +12,8 @@ const db = require("./config/db");
 db.connect();
 
 const corsOptions = {
-    origin: "http://tocvietxuanloc.com",
+    //origin: "http://tocvietxuanloc.com",
+    origin: "http://localhost:3000",
     credentials: true, //access-control-allow-credentials:true
     optionSuccessStatus: 200,
 };

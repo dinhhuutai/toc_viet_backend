@@ -13,6 +13,8 @@ router.get("/getAll", serviceController.getAll);
 router.get("/getAllMale", serviceController.getAllMale);
 router.get("/getAllFemale", serviceController.getAllFemale);
 router.post("/find", verifyToken, serviceController.find);
+router.post("/createComment/:id", serviceController.createComment);
+router.post("/findComment/:id", serviceController.findComment);
 
 
 

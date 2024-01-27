@@ -8,21 +8,13 @@ const ProductSchema = new Schema({
     description: {
         type: String,
     },
-    image: {
-        type: String,
+    image: { 
+        type: String, 
     },
     price: {
         type: String,
     },
-    information: {
-        type: String,
-    },
-    expiry: {
-        type: String,
-    },
-    ingredient: {
-        type: String,
-    },
+    idCategory: {type: Schema.Types.ObjectId, ref: 'categorys'},
     view: {
         type: String,
     },
@@ -43,15 +35,26 @@ const ProductSchema = new Schema({
             phone: {
                 type: String,
             },
-        }
+            image: {
+                type: String,
+            },
+            feedback: {
+                type: String,
+                trim: true,
+            },
+            createDate: {
+                type: Date,
+                default: Date.now
+            },
+        },
     ],
     createDate: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
     updateDate: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
 });
 

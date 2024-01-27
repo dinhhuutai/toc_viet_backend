@@ -1,48 +1,34 @@
-const Service = require("../models/Service");
+const Product = require("../models/Product");
 const shortid = require("shortid");
 
 const cloudinary = require("cloudinary").v2;
 const stringImage = require("../../utils/sliceStringImage");
 
-class ServiceController {
-    // [POST] /api/v1/service/create
+class ProductController {
+    
+    // [POST] /api/v1/product/create
     async create(req, res, next) {
         try {
-            const service = new Service({
+            const product = new Product({
                 ...req.body,
-                comment: [
-                    {
-                        star: "5",
-                        title: "",
-                        content:
-                            "Salon không gian thoải mái, sang trọng và sạch sẽ. Nhân viên nhiệt tình, vui vẻ, chuyên nghiệp, chất lượng dịch vụ tốt, kiểu tóc đẹp.",
-                        name: "Khách hàng tóc việt",
-                        phone: "",
-                        image: "https://res.cloudinary.com/duqn7oauj/image/upload/v1706185892/salon_hair_toc_viet/bg-login_ncc1h8.jpg",
-                        createDate: Date.now(),
-                    },
-                ],
                 createDate: Date.now(),
             });
 
-            await service.save();
+            await product.save();
 
             res.status(200).json({
                 success: true,
-                service,
+                product,
             });
         } catch (error) {
-            const filename = stringImage(req.body.image);
-            cloudinary.uploader.destroy(filename);
 
-            console.log(error);
             return res
                 .status(500)
                 .json({ success: false, message: "Internal server error" });
         }
     }
 
-    // [POST] /api/v1/service/find
+    // [POST] /api/v1/product/find
     async find(req, res, next) {
         const limit = req.query.limit;
         const skip = req.query.skip;
@@ -59,7 +45,7 @@ class ServiceController {
         }
 
         try {
-            const service = await Service.find({
+            const product = await Product.find({
                 $or: [
                     { name: { $regex: new RegExp(search, "i") } },
                     {
@@ -73,7 +59,7 @@ class ServiceController {
                 .limit(limit)
                 .skip(skip);
 
-            const totalService = await Service.find({
+            const totalProduct = await Product.find({
                 $or: [
                     { name: { $regex: new RegExp(search, "i") } },
                     {
@@ -86,14 +72,14 @@ class ServiceController {
 
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const totalAddToday = await Service.find({
+            const totalAddToday = await Product.find({
                 createDate: { $gte: today },
             }).count();
 
             return res.status(200).json({
                 success: true,
-                service,
-                totalService,
+                product,
+                totalProduct,
                 totalAddToday,
             });
         } catch (error) {
@@ -104,15 +90,40 @@ class ServiceController {
         }
     }
 
-    // [POST] /api/v1/service/delete
+    // [GET] /api/v1/product/getAll?limit=&skip=
+    async getAll(req, res, next) {
+        const limit = req.query.limit;
+        const skip = req.query.skip;
+
+        try {
+            const products = await Product.find().sort({ createDate: -1 })
+                .limit(limit)
+                .skip(skip);
+
+            const totalProduct = await Product.find().count();
+
+            return res.status(200).json({
+                success: true,
+                products,
+                totalProduct,
+            });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .json({ success: false, message: "Internal server error" });
+        }
+    }
+
+    // [POST] /api/v1/product/delete
     async delete(req, res, next) {
         try {
             const { listId } = req.body;
 
             listId.map(async (id) => {
-                const service = await Service.findById(id);
-                const image = service.image;
-                const resDelete = await Service.findByIdAndDelete(id);
+                const product = await Product.findById(id);
+                const image = product.image;
+                const resDelete = await Product.findByIdAndDelete(id);
 
                 if (resDelete) {
                     const filename = await stringImage(image);
@@ -131,16 +142,16 @@ class ServiceController {
         }
     }
 
-    // [GET] /api/v1/service/getSingle/:id
+    // [GET] /api/v1/product/getSingle/:id
     async getSingle(req, res, next) {
         try {
             const id = req.params.id;
 
-            const service = await Service.findById(id);
+            const product = await Product.findById(id);
 
             return res.status(200).json({
                 success: true,
-                service,
+                product,
             });
         } catch (error) {
             console.log(error);
@@ -150,12 +161,12 @@ class ServiceController {
         }
     }
 
-    // [PUT] /api/v1/service/update/:id
+    // [PUT] /api/v1/product/update/:id
     async update(req, res, next) {
         try {
             const id = req.params.id;
 
-            const service = await Service.findByIdAndUpdate(
+            const product = await Product.findByIdAndUpdate(
                 id,
                 {
                     ...req.body,
@@ -166,7 +177,7 @@ class ServiceController {
 
             return res.status(200).json({
                 success: true,
-                service,
+                product,
             });
         } catch (error) {
             console.log(error);
@@ -176,76 +187,12 @@ class ServiceController {
         }
     }
 
-    // [GET] /api/v1/service/getAll
-    async getAll(req, res, next) {
-        try {
-            const services = await Service.find({
-                $or: [
-                    { name: { $regex: new RegExp(search, "i") } },
-                    {
-                        title: {
-                            $regex: new RegExp(search.replace(/ /g, "-"), "i"),
-                        },
-                    },
-                ],
-            }).sort({ createDate: -1 });
-
-            return res.status(200).json({
-                success: true,
-                services,
-            });
-        } catch (error) {
-            console.log(error);
-            return res
-                .status(500)
-                .json({ success: false, message: "Internal server error" });
-        }
-    }
-
-    // [GET] /api/v1/service/getAllMale
-    async getAllMale(req, res, next) {
-        try {
-            const services = await Service.find({
-                sex: false,
-            });
-
-            return res.status(200).json({
-                success: true,
-                services,
-            });
-        } catch (error) {
-            console.log(error);
-            return res
-                .status(500)
-                .json({ success: false, message: "Internal server error" });
-        }
-    }
-
-    // [GET] /api/v1/service/getAllFemale
-    async getAllFemale(req, res, next) {
-        try {
-            const services = await Service.find({
-                sex: true,
-            });
-
-            return res.status(200).json({
-                success: true,
-                services,
-            });
-        } catch (error) {
-            console.log(error);
-            return res
-                .status(500)
-                .json({ success: false, message: "Internal server error" });
-        }
-    }
-
-    // [POST] /api/v1/service/createComment/:id
+    // [POST] /api/v1/product/createComment/:id
     async createComment(req, res, next) {
         try {
             const id = req.params.id;
 
-            const service = await Service.findByIdAndUpdate(
+            const product = await Product.findByIdAndUpdate(
                 id,
                 {
                     $push: {
@@ -259,8 +206,8 @@ class ServiceController {
             );
 
             // Giới hạn mảng comment chỉ lấy 10 phần tử
-            const comment = service.comment.slice(0, 10);
-            const commentLength = service.comment.length;
+            const comment = product.comment.slice(0, 10);
+            const commentLength = product.comment.length;
 
             return res.status(200).json({
                 success: true,
@@ -275,17 +222,17 @@ class ServiceController {
         }
     }
 
-    // [POST] /api/v1/service/findComment/:id?limit=
+    // [POST] /api/v1/product/findComment/:id?limit=
     async findComment(req, res, next) {
         try {
             const id = req.params.id;
             const limit = req.query.limit;
 
-            const service = await Service.findById(id);
+            const product = await Product.findById(id);
 
             // Giới hạn mảng comment chỉ lấy 10 phần tử
-            const comment = service.comment.slice((limit*10), (limit+1)*10);
-            const commentLength = service.comment.length;
+            const comment = product.comment.slice((limit*10), (limit+1)*10);
+            const commentLength = product.comment.length;
 
             return res.status(200).json({
                 success: true,
@@ -299,6 +246,7 @@ class ServiceController {
                 .json({ success: false, message: "Internal server error" });
         }
     }
+
 }
 
-module.exports = new ServiceController();
+module.exports = new ProductController();

@@ -37,6 +37,17 @@ const ServiceSchema = new Schema({
             phone: {
                 type: String,
             },
+            image: {
+                type: String,
+            },
+            feedback: {
+                type: String,
+                trim: true,
+            },
+            createDate: {
+                type: Date,
+                default: Date.now
+            },
         },
     ],
     createDate: {

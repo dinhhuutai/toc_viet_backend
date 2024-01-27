@@ -14,6 +14,13 @@ router.get("/get", collectionController.get);
 router.post("/find", verifyToken, collectionController.find);
 router.post("/deleteSingleImage", verifyToken, collectionController.deleteSingleImage);
 
+router.post("/createComment/:id", collectionController.createComment);
+router.post("/findComment/:id", collectionController.findComment);
+
+router.get("/getAdminComment", collectionController.getAdminComment);
+router.put("/updateComment/:idCollection/:idComment", collectionController.updateComment);
+router.post("/findCommentByNotFeedback/:id", collectionController.findCommentByNotFeedback);
+router.post("/deleteComment/:idCollection/:idComment", collectionController.deleteComment);
 
 
 module.exports = router;
