@@ -26,6 +26,9 @@ const SalonSchema = new Schema({
     phone: {
         type: String,
     },
+    phone1: {
+        type: String,
+    },
     email: {
         type: String,
     },

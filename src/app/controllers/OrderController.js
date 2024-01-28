@@ -29,7 +29,7 @@ class OrderController {
     // [PUT] /api/v1/order/updateToProcessing/:id
     async updateToProcessing(req, res, next) {
         try {
-            const order = await Order.findByIdAndUpdate(id, {
+            const order = await Order.findByIdAndUpdate(req.params.id, {
                 status: 'processing',
             }, {new: true})
 
@@ -48,7 +48,7 @@ class OrderController {
     // [PUT] /api/v1/order/updateToSuccessed/:id
     async updateToSuccessed(req, res, next) {
         try {
-            const order = await Order.findByIdAndUpdate(id, {
+            const order = await Order.findByIdAndUpdate(req.params.id, {
                 status: 'successed',
             }, {new: true})
 
@@ -67,7 +67,7 @@ class OrderController {
     // [PUT] /api/v1/order/updateToCancel/:id
     async updateToCancel(req, res, next) {
         try {
-            const order = await Order.findByIdAndUpdate(id, {
+            const order = await Order.findByIdAndUpdate(req.params.id, {
                 status: 'cancel',
             }, {new: true})
 
@@ -92,10 +92,11 @@ class OrderController {
         try {
             const orders = await Order.find({status: 'wait'})
                 .sort({ createDate: -1 })
+                .populate("idProduct")
                 .limit(limit)
                 .skip(skip);
 
-            const totalOrder = await Product.find({status: 'wait'}).count();
+            const totalOrder = await Order.find({status: 'wait'}).count();
 
             return res.status(200).json({
                 success: true,
@@ -120,10 +121,11 @@ class OrderController {
         try {
             const orders = await Order.find({status: 'processing'})
                 .sort({ createDate: -1 })
+                .populate("idProduct")
                 .limit(limit)
                 .skip(skip);
 
-            const totalOrder = await Product.find({status: 'processing'}).count();
+            const totalOrder = await Order.find({status: 'processing'}).count();
 
             return res.status(200).json({
                 success: true,
@@ -147,10 +149,11 @@ class OrderController {
         try {
             const orders = await Order.find({status: 'successed'})
                 .sort({ createDate: -1 })
+                .populate("idProduct")
                 .limit(limit)
                 .skip(skip);
 
-            const totalOrder = await Product.find({status: 'successed'}).count();
+            const totalOrder = await Order.find({status: 'successed'}).count();
 
             return res.status(200).json({
                 success: true,
@@ -175,10 +178,11 @@ class OrderController {
         try {
             const orders = await Order.find({status: 'cancel'})
                 .sort({ createDate: -1 })
+                .populate("idProduct")
                 .limit(limit)
                 .skip(skip);
 
-            const totalOrder = await Product.find({status: 'cancel'}).count();
+            const totalOrder = await Order.find({status: 'cancel'}).count();
 
             return res.status(200).json({
                 success: true,

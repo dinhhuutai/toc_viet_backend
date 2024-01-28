@@ -10,6 +10,12 @@ const categoryRouter = require('./category');
 
 const noticeRouter = require('./notice');
 const orderRouter = require('./order');
+const bannertocVietRouter = require('./bannertocViet');
+const bannerProductRouter = require('./bannerProduct');
+const bannerCollectionRouter = require('./bannerCollection');
+const bannerTrainRouter = require('./bannerTrain');
+
+const opinionRouter = require('./opinion');
 
 
 function routes(app) {
@@ -27,6 +33,13 @@ function routes(app) {
 
     app.use("/api/v1/notice", noticeRouter);
     app.use("/api/v1/order", orderRouter);
+
+    app.use("/api/v1/bannerTocViet", bannertocVietRouter);
+    app.use("/api/v1/bannerProduct", bannerProductRouter);
+    app.use("/api/v1/bannerCollection", bannerCollectionRouter);
+    app.use("/api/v1/bannerTrain", bannerTrainRouter);
+
+    app.use("/api/v1/opinion", opinionRouter);
 
 }
 

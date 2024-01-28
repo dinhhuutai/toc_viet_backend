@@ -12,8 +12,9 @@ const db = require("./config/db");
 db.connect();
 
 const corsOptions = {
-    //origin: "http://tocvietxuanloc.com",
-    origin: "http://localhost:3000",
+    origin: "http://tocvietxuanloc.com",
+    //origin: "http://localhost:3000",
+    //origin: "https://8a1f-2402-800-639d-9dc9-f0b0-5ee1-48df-a20f.ngrok-free.app",
     credentials: true, //access-control-allow-credentials:true
     optionSuccessStatus: 200,
 };
